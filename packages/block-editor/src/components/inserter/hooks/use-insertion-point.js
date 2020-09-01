@@ -20,7 +20,7 @@ import { speak } from '@wordpress/a11y';
  * @property {boolean} selectBlockOnInsert Whether the block should be selected on insert.
  */
 
-let destinationRootClientIdCache = null;
+let propCache = {};
 
 /**
  * Returns the insertion point state given the inserter config.
@@ -49,22 +49,25 @@ function useInsertionPoint( {
 				getBlockSelectionEnd: _getBlockSelectionEnd,
 			} = select( 'core/block-editor' );
 
-			let destRootClientId = rootClientId;
-			if ( ! destRootClientId && ! clientId && ! isAppender ) {
+			if ( rootClientId || clientId || isAppender ) {
+				propCache = {
+					rootClientId,
+					clientId,
+					isAppender,
+				};
+			}
+			let destRootClientId = propCache.rootClientId;
+			if ( ! destRootClientId && ! propCache.clientId && ! isAppender ) {
 				const end = _getBlockSelectionEnd();
 				if ( end ) {
 					destRootClientId = getBlockRootClientId( end );
 				}
 			}
 
-			if ( destRootClientId ) {
-				destinationRootClientIdCache = destRootClientId;
-			}
-
 			return {
 				hasPatterns: !! getSettings().__experimentalBlockPatterns
 					?.length,
-				destinationRootClientId: destinationRootClientIdCache,
+				destinationRootClientId: destRootClientId,
 				...pick( select( 'core/block-editor' ), [
 					'getSelectedBlock',
 					'getBlockIndex',
@@ -75,6 +78,7 @@ function useInsertionPoint( {
 		},
 		[ isAppender, clientId, rootClientId ]
 	);
+
 	const {
 		replaceBlocks,
 		insertBlocks,
