@@ -57,7 +57,7 @@ function useInsertionPoint( {
 				}
 			}
 
-			if ( ! destinationRootClientIdCache ) {
+			if ( destRootClientId ) {
 				destinationRootClientIdCache = destRootClientId;
 			}
 
