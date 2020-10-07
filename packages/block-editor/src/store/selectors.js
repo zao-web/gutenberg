@@ -1257,7 +1257,11 @@ const canInsertBlockTypeUnmemoized = (
 		return defaultResult;
 	};
 
-	const blockType = getBlockType( blockName );
+	let blockType = getBlockType( blockName );
+	if ( 'object' === typeof blockName ) {
+		blockType = blockName;
+		blockName = blockType.name;
+	}
 	if ( ! blockType ) {
 		return false;
 	}
