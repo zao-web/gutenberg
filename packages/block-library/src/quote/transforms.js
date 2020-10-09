@@ -101,6 +101,7 @@ const transforms = {
 								'H6',
 								'UL',
 								'OL',
+								'PRE',
 							].some( ( tag ) => tag === child.nodeName )
 						) {
 							return true;
@@ -194,6 +195,13 @@ const transforms = {
 								createBlock( 'core/list', {
 									ordered: true,
 									values: childNode.innerHTML,
+								} )
+							);
+							break;
+						case 'PRE':
+							innerBlocks.push(
+								createBlock( 'core/code', {
+									content: childNode.innerHTML,
 								} )
 							);
 							break;
