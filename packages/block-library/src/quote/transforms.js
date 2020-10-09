@@ -87,7 +87,7 @@ const transforms = {
 		{
 			type: 'raw',
 			isMatch: ( node ) => {
-				const isParagraphOrSingleCite = ( () => {
+				const isAllowedNode = ( () => {
 					let hasCitation = false;
 					return ( child ) => {
 						if (
@@ -117,9 +117,7 @@ const transforms = {
 					node.nodeName === 'BLOCKQUOTE' &&
 					// The quote block can only handle multiline paragraph
 					// content with an optional cite child.
-					Array.from( node.childNodes ).every(
-						isParagraphOrSingleCite
-					)
+					Array.from( node.childNodes ).every( isAllowedNode )
 				);
 			},
 			transform: ( node ) => {
