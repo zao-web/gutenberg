@@ -91,9 +91,17 @@ const transforms = {
 					let hasCitation = false;
 					return ( child ) => {
 						if (
-							[ 'P', 'H1', 'H2', 'H3', 'H4', 'H5', 'H6' ].some(
-								( tag ) => tag === child.nodeName
-							)
+							[
+								'P',
+								'H1',
+								'H2',
+								'H3',
+								'H4',
+								'H5',
+								'H6',
+								'UL',
+								'OL',
+							].some( ( tag ) => tag === child.nodeName )
 						) {
 							return true;
 						}
@@ -170,6 +178,22 @@ const transforms = {
 								createBlock( 'core/heading', {
 									level: 6,
 									content: childNode.innerHTML,
+								} )
+							);
+							break;
+						case 'UL':
+							innerBlocks.push(
+								createBlock( 'core/list', {
+									ordered: false,
+									values: childNode.innerHTML,
+								} )
+							);
+							break;
+						case 'OL':
+							innerBlocks.push(
+								createBlock( 'core/list', {
+									ordered: true,
+									values: childNode.innerHTML,
 								} )
 							);
 							break;
