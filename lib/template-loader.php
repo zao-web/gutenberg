@@ -166,7 +166,7 @@ function create_auto_draft_for_template_part_block( $block ) {
 				if ( ! file_exists( $template_part_file_path ) ) {
 					if ( gutenberg_is_experiment_enabled( 'gutenberg-full-site-editing-demo' ) ) {
 						$template_part_file_path =
-							dirname( __FILE__ ) . '/demo-block-template-parts/' . $block['attrs']['slug'] . '.html';
+							__DIR__ . '/demo-block-template-parts/' . $block['attrs']['slug'] . '.html';
 						if ( ! file_exists( $template_part_file_path ) ) {
 							$template_part_file_path = false;
 						}

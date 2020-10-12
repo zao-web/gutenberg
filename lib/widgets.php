@@ -283,7 +283,7 @@ function change_post_template_to_widget_preview( $template ) {
 		current_user_can( 'edit_theme_options' )
 	) {
 		add_filter( 'show_admin_bar', '__return_false' );
-		return dirname( __FILE__ ) . '/widget-preview-template.php';
+		return __DIR__ . '/widget-preview-template.php';
 	}
 	return $template;
 }
