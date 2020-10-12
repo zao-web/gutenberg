@@ -24,7 +24,6 @@ import {
 	getUnregisteredTypeHandlerName,
 } from './registration';
 import { normalizeBlockType } from './utils';
-import BlockContentProvider from '../block-content-provider';
 
 /**
  * @typedef {Object} WPBlockSerializationOptions Serialization Options.
@@ -139,9 +138,9 @@ export function getSaveElement(
 	let element = save( { attributes, innerBlocks } );
 
 	if (
+		! blockType.apiVersion &&
 		isObject( element ) &&
-		hasFilter( 'blocks.getSaveContent.extraProps' ) &&
-		! blockType.apiVersion
+		hasFilter( 'blocks.getSaveContent.extraProps' )
 	) {
 		/**
 		 * Filters the props applied to the block save result element.
@@ -169,17 +168,11 @@ export function getSaveElement(
 	 * @param {WPBlock}   blockType  Block type definition.
 	 * @param {Object}    attributes Block attributes.
 	 */
-	element = applyFilters(
+	return applyFilters(
 		'blocks.getSaveElement',
 		element,
 		blockType,
 		attributes
-	);
-
-	return (
-		<BlockContentProvider innerBlocks={ innerBlocks }>
-			{ element }
-		</BlockContentProvider>
 	);
 }
 

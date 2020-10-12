@@ -11,7 +11,6 @@ import { forwardRef, useRef } from '@wordpress/element';
 import { useSelect } from '@wordpress/data';
 import {
 	getBlockType,
-	withBlockContentContext,
 	__unstableGetInnerBlocksProps as getInnerBlocksProps,
 } from '@wordpress/blocks';
 
@@ -190,9 +189,7 @@ useInnerBlocksProps.save = getInnerBlocksProps;
 ForwardedInnerBlocks.DefaultBlockAppender = DefaultBlockAppender;
 ForwardedInnerBlocks.ButtonBlockAppender = ButtonBlockAppender;
 
-ForwardedInnerBlocks.Content = withBlockContentContext(
-	( { BlockContent } ) => <BlockContent />
-);
+ForwardedInnerBlocks.Content = () => useInnerBlocksProps.save().children;
 
 /**
  * @see https://github.com/WordPress/gutenberg/blob/master/packages/block-editor/src/components/inner-blocks/README.md
