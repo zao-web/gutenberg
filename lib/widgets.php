@@ -1,6 +1,6 @@
 <?php
 /**
- * Functions used in making widgets interopable with block editors.
+ * Functions used in making widgets interoperable with block editors.
  *
  * @package gutenberg
  */
@@ -270,7 +270,7 @@ function gutenberg_register_widgets() {
 add_action( 'widgets_init', 'gutenberg_register_widgets' );
 
 /**
- * Overwrites the template WordPress would use to render the currrent request,
+ * Overwrites the template WordPress would use to render the current request,
  * to a widget preview template if widgetPreview parameter was passed in the url.
  *
  * @param string $template Original template.
