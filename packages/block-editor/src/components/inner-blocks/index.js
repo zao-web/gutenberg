@@ -160,6 +160,20 @@ export function useInnerBlocksProps( props = {}, options = {} ) {
 			? ControlledInnerBlocks
 			: UncontrolledInnerBlocks;
 
+	const children = [
+		<InnerBlocks
+			key={ clientId }
+			{ ...options }
+			clientId={ clientId }
+			wrapperRef={ ref }
+		/>,
+	];
+	if ( props.childrenBefore ) {
+		children.unshift( props.childrenBefore );
+	}
+	if ( props.childrenAfter ) {
+		children.push( props.childrenAfter );
+	}
 	return {
 		...props,
 		ref,
@@ -170,16 +184,7 @@ export function useInnerBlocksProps( props = {}, options = {} ) {
 				'has-overlay': hasOverlay,
 			}
 		),
-		children: (
-			<>
-				<InnerBlocks
-					{ ...options }
-					clientId={ clientId }
-					wrapperRef={ ref }
-				/>
-				{ props.children }
-			</>
-		),
+		children,
 	};
 }
 

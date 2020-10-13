@@ -39,7 +39,7 @@ export default function QuoteEdit( {
 		className: classnames( className, {
 			[ `has-text-align-${ align }` ]: align,
 		} ),
-		children: ( ! RichText.isEmpty( citation ) ||
+		childrenAfter: ( ! RichText.isEmpty( citation ) ||
 			isSelected ||
 			isAncestorOfSelectedBlock ) && (
 			<RichText
