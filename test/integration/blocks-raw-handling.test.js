@@ -320,7 +320,7 @@ describe( 'Blocks raw handling', () => {
 			.join( '' );
 
 		expect( filtered ).toBe(
-			'<blockquote class="wp-block-quote"><p></p><cite>ribs</cite></blockquote>'
+			'<blockquote class="wp-block-quote"><cite>ribs</cite></blockquote>'
 		);
 		expect( console ).toHaveLogged();
 	} );
