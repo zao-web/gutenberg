@@ -277,7 +277,9 @@ describe( 'Blocks raw handling', () => {
 			.join( '' );
 
 		expect( filtered ).toBe(
-			'<blockquote class="wp-block-quote"><p>chicken</p><cite>ribs</cite></blockquote>'
+			`<blockquote class="wp-block-quote"><!-- wp:paragraph -->
+<p>chicken</p>
+<!-- /wp:paragraph --><cite>ribs</cite></blockquote>`
 		);
 		expect( console ).toHaveLogged();
 	} );
