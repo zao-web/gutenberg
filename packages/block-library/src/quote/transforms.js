@@ -86,6 +86,18 @@ const transforms = {
 		},
 		{
 			type: 'raw',
+			schema: ( { phrasingContentSchema } ) => ( {
+				blockquote: {
+					children: {
+						p: {
+							children: phrasingContentSchema,
+						},
+						cite: {
+							children: phrasingContentSchema,
+						},
+					},
+				},
+			} ),
 			isMatch: ( node ) => {
 				const isAllowedNode = ( () => {
 					let hasCitation = false;
