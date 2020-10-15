@@ -241,7 +241,7 @@ describe( 'Blocks raw handling', () => {
 		expect( console ).toHaveLogged();
 	} );
 
-	it( 'should correctly handle quotes with one paragraphs and no citation', () => {
+	it( 'should correctly handle quotes with one paragraph and no citation', () => {
 		const filtered = pasteHandler( {
 			HTML: '<blockquote><p>chicken</p></blockquote>',
 			mode: 'AUTO',
