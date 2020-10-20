@@ -25,7 +25,7 @@ function PostStatus( { isOpened, onTogglePanel } ) {
 	return (
 		<PanelBody
 			className="edit-post-post-status"
-			title={ __( 'General' ) }
+			title={ __( 'Status' ) }
 			opened={ isOpened }
 			onToggle={ onTogglePanel }
 		>

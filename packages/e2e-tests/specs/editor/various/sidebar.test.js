@@ -128,7 +128,7 @@ describe( 'Sidebar', () => {
 		await enableFocusLossObservation();
 		await openDocumentSettingsSidebar();
 
-		expect( await findSidebarPanelWithTitle( 'General' ) ).toBeDefined();
+		expect( await findSidebarPanelWithTitle( 'Status' ) ).toBeDefined();
 		expect(
 			await findSidebarPanelWithTitle( 'Visibility:' )
 		).toBeDefined();
@@ -164,7 +164,7 @@ describe( 'Sidebar', () => {
 			return `//div[contains(@class, "edit-post-sidebar")]//button[contains(@class, "components-panel__body-toggle") and contains(text(),"${ panelTitle }")]`;
 		};
 
-		expect( await page.$x( getPanelToggleSelector( 'General' ) ) ).toEqual(
+		expect( await page.$x( getPanelToggleSelector( 'Status' ) ) ).toEqual(
 			[]
 		);
 		expect(
