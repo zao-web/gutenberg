@@ -58,7 +58,7 @@ export function PostVisibility() {
 							) }
 						</span>
 					) }
-					{ canEdit && <PostVisibilityForm /> }
+					{ canEdit && <PostVisibilityForm showLegend={ false } /> }
 				</PanelBody>
 			) }
 		/>
