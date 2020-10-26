@@ -17,7 +17,6 @@ import {
 import { BlockQuotation } from '@wordpress/components';
 import { createBlock } from '@wordpress/blocks';
 import { useSelect } from '@wordpress/data';
-import { Fragment } from '@wordpress/element';
 
 export default function QuoteEdit( {
 	attributes,
@@ -41,7 +40,7 @@ export default function QuoteEdit( {
 			[ `has-text-align-${ align }` ]: align,
 		} ),
 	} );
-	const innerBlocksProps = useInnerBlocksProps();
+	const innerBlocksProps = useInnerBlocksProps( blockProps );
 
 	return (
 		<>
@@ -53,8 +52,8 @@ export default function QuoteEdit( {
 					} }
 				/>
 			</BlockControls>
-			<BlockQuotation { ...blockProps }>
-				<Fragment { ...innerBlocksProps } />
+			<BlockQuotation { ...innerBlocksProps }>
+				{ innerBlocksProps.children }
 				{ ( ! RichText.isEmpty( citation ) ||
 					isSelected ||
 					isAncestorOfSelectedBlock ) && (
