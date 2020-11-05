@@ -159,7 +159,12 @@ _Parameters_
 
 <a name="useFocusableIframe" href="#useFocusableIframe">#</a> **useFocusableIframe**
 
-Undocumented declaration.
+Dispatches a bubbling focus event when the iframe receives focus. Use
+`onFocus` as usual on the iframe or a parent element.
+
+_Parameters_
+
+-   _ref_ `Object`: React ref to the iframe.
 
 <a name="useInstanceId" href="#useInstanceId">#</a> **useInstanceId**
 
