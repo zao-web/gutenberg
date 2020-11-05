@@ -157,6 +157,10 @@ _Parameters_
 
 -   _args_ `...any`: Arguments passed to Lodash's `debounce`.
 
+<a name="useFocusableIframe" href="#useFocusableIframe">#</a> **useFocusableIframe**
+
+Undocumented declaration.
+
 <a name="useInstanceId" href="#useInstanceId">#</a> **useInstanceId**
 
 Provides a unique instance ID.
