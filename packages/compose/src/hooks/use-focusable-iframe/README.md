@@ -11,7 +11,7 @@ import { useRef } from '@wordpress/element';
 import { useFocusableIframe } from '@wordpress/compose';
 
 const MyFocusableIframe = () => {
-    const ref = useRef( ref );
+    const ref = useRef();
 
     useFocusableIframe( ref );
 
