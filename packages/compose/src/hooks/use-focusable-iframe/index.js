@@ -20,7 +20,7 @@ export default function useFocusableIframe( ref ) {
 		 * then received focus, and dispatches a focus event.
 		 */
 		function checkFocus() {
-			if ( ownerDocument.activeElement !== ref.current ) {
+			if ( ownerDocument.activeElement === ref.current ) {
 				ref.current.dispatchEvent(
 					new FocusEvent( 'focus', { bubbles: true } )
 				);
