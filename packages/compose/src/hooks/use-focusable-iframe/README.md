@@ -17,6 +17,7 @@ const MyFocusableIframe = () => {
 
     return(
         <iframe
+            ref={ ref }
             src="/my-iframe-url"
             onFocus={ () => console.log( 'iframe is focused' ) }
         />
