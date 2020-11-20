@@ -32,6 +32,7 @@
 	"main": "index.js",
 	"dependencies": {
 		"@wordpress/prettier-config": "file:../prettier-config",
+		"@typescript-eslint/parser": "^4.8.1",
 		"babel-eslint": "^10.1.0",
 		"cosmiconfig": "^7.0.0",
 		"eslint-config-prettier": "^6.10.1",
