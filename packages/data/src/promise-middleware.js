@@ -11,7 +11,7 @@ import isPromise from 'is-promise';
 const promiseMiddleware = () => ( next ) => ( action ) => {
 	if ( isPromise( action ) ) {
 		return action.then( ( resolvedAction ) => {
-			if ( action.isAsyncAction ) {
+			if ( action.isRegistryAction ) {
 				return resolvedAction;
 			} else if ( resolvedAction ) {
 				return next( resolvedAction );

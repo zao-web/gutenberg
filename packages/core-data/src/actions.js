@@ -7,7 +7,7 @@ import { v4 as uuid } from 'uuid';
 /**
  * WordPress dependencies
  */
-import { createAsyncRegistryAction } from '@wordpress/data';
+import { createRegistryAction } from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -224,7 +224,7 @@ export function* deleteEntityRecord( kind, name, recordId, query ) {
  *
  * @return {Object} Action object.
  */
-export const editEntityRecord = createAsyncRegistryAction(
+export const editEntityRecord = createRegistryAction(
 	( { select } ) => async ( kind, name, recordId, edits, options = {} ) => {
 		const entity = select( 'core', 'getEntity', kind, name );
 		if ( ! entity ) {
@@ -282,36 +282,36 @@ export const editEntityRecord = createAsyncRegistryAction(
  * Action triggered to undo the last edit to
  * an entity record, if any.
  */
-export const undo = createAsyncRegistryAction( ( { select } ) => () => {
+export const undo = createRegistryAction( ( { select, yieldAction } ) => () => {
 	const undoEdit = select( 'core' ).getUndoEdit();
 	if ( ! undoEdit ) {
 		return;
 	}
-	return {
+	yieldAction( {
 		type: 'EDIT_ENTITY_RECORD',
 		...undoEdit,
 		meta: {
 			isUndo: true,
 		},
-	};
+	} );
 } );
 
 /**
  * Action triggered to redo the last undoed
  * edit to an entity record, if any.
  */
-export const redo = createAsyncRegistryAction( ( { select } ) => () => {
+export const redo = createRegistryAction( ( { select, yieldAction } ) => () => {
 	const redoEdit = select( 'core' ).getRedoEdit();
 	if ( ! redoEdit ) {
 		return;
 	}
-	return {
+	yieldAction( {
 		type: 'EDIT_ENTITY_RECORD',
 		...redoEdit,
 		meta: {
 			isRedo: true,
 		},
-	};
+	} );
 } );
 
 /**
@@ -332,7 +332,7 @@ export function __unstableCreateUndoLevel() {
  * @param {Object}  options                    Saving options.
  * @param {boolean} [options.isAutosave=false] Whether this is an autosave.
  */
-export const saveEntityRecord = createAsyncRegistryAction(
+export const saveEntityRecord = createRegistryAction(
 	( { select, dispatch, yieldAction } ) => async (
 		kind,
 		name,
@@ -614,7 +614,7 @@ export const saveEntityRecord = createAsyncRegistryAction(
  * @param {Object} recordId ID of the record.
  * @param {Object} options  Saving options.
  */
-export const saveEditedEntityRecord = createAsyncRegistryAction(
+export const saveEditedEntityRecord = createRegistryAction(
 	( { select, dispatch } ) => ( kind, name, recordId, options ) => {
 		if (
 			! select( 'core' ).hasEditsForEntityRecord( kind, name, recordId )

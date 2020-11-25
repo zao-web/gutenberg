@@ -8,7 +8,7 @@ import { find, includes, get, hasIn, compact, uniq } from 'lodash';
  */
 import { addQueryArgs } from '@wordpress/url';
 import deprecated from '@wordpress/deprecated';
-import { controls, createAsyncRegistryAction } from '@wordpress/data';
+import { controls, createRegistryAction } from '@wordpress/data';
 import { apiFetch } from '@wordpress/data-controls';
 import triggerFetch from '@wordpress/api-fetch';
 
@@ -25,7 +25,7 @@ import { ifNotResolved, getNormalizedCommaSeparable } from './utils';
  * @param {Object|undefined} query Optional object of query parameters to
  *                                 include with request.
  */
-export const getAuthors = createAsyncRegistryAction(
+export const getAuthors = createRegistryAction(
 	( { dispatch } ) => async ( query ) => {
 		const path = addQueryArgs(
 			'/wp/v2/users/?who=authors&per_page=100',
@@ -41,7 +41,7 @@ export const getAuthors = createAsyncRegistryAction(
  *
  * @param {number} id The author id.
  */
-export const __unstableGetAuthor = createAsyncRegistryAction(
+export const __unstableGetAuthor = createRegistryAction(
 	( { dispatch } ) => async ( id ) => {
 		const path = `/wp/v2/users?who=authors&include=${ id }`;
 		const users = await triggerFetch( { path } );
@@ -52,7 +52,7 @@ export const __unstableGetAuthor = createAsyncRegistryAction(
 /**
  * Requests the current user from the REST API.
  */
-export const getCurrentUser = createAsyncRegistryAction(
+export const getCurrentUser = createRegistryAction(
 	( { dispatch } ) => async () => {
 		const currentUser = await triggerFetch( { path: '/wp/v2/users/me' } );
 		return dispatch( 'core' ).receiveCurrentUser( currentUser );
@@ -68,7 +68,7 @@ export const getCurrentUser = createAsyncRegistryAction(
  * @param {Object|undefined} query Optional object of query parameters to
  *                                 include with request.
  */
-export const getEntityRecord = createAsyncRegistryAction(
+export const getEntityRecord = createRegistryAction(
 	( { yieldAction, select, dispatch } ) => async (
 		kind,
 		name,
@@ -167,7 +167,7 @@ export const getEditedEntityRecord = ifNotResolved(
  * @param {string}  name   Entity name.
  * @param {Object?} query  Query Object.
  */
-export const getEntityRecords = createAsyncRegistryAction(
+export const getEntityRecords = createRegistryAction(
 	( { yieldAction, dispatch } ) => async ( kind, name, query = {} ) => {
 		const entities = await yieldAction( getKindEntities( kind ) );
 		const entity = find( entities, { kind, name } );
@@ -262,7 +262,7 @@ getEntityRecords.shouldInvalidate = ( action, kind, name ) => {
 /**
  * Requests the current theme.
  */
-export const getCurrentTheme = createAsyncRegistryAction(
+export const getCurrentTheme = createRegistryAction(
 	( { dispatch } ) => async () => {
 		const activeThemes = await triggerFetch( {
 			path: '/wp/v2/themes?status=active',
@@ -274,7 +274,7 @@ export const getCurrentTheme = createAsyncRegistryAction(
 /**
  * Requests theme supports data from the index.
  */
-export const getThemeSupports = createAsyncRegistryAction(
+export const getThemeSupports = createRegistryAction(
 	( { dispatch } ) => async () => {
 		const activeThemes = await triggerFetch( {
 			path: '/wp/v2/themes?status=active',
@@ -290,7 +290,7 @@ export const getThemeSupports = createAsyncRegistryAction(
  *
  * @param {string} url   URL to get the preview for.
  */
-export const getEmbedPreview = createAsyncRegistryAction(
+export const getEmbedPreview = createRegistryAction(
 	( { dispatch } ) => async ( url ) => {
 		try {
 			const embedProxyResponse = await triggerFetch( {
@@ -313,7 +313,7 @@ export const getEmbedPreview = createAsyncRegistryAction(
  * @deprecated since 5.0. Callers should use the more generic `canUser()` selector instead of
  *            `hasUploadPermissions()`, e.g. `canUser( 'create', 'media' )`.
  */
-export const hasUploadPermissions = createAsyncRegistryAction(
+export const hasUploadPermissions = createRegistryAction(
 	( { dispatch } ) => async () => {
 		deprecated( "select( 'core' ).hasUploadPermissions()", {
 			alternative: "select( 'core' ).canUser( 'create', 'media' )",
@@ -331,7 +331,7 @@ export const hasUploadPermissions = createAsyncRegistryAction(
  * @param {string}  resource REST resource to check, e.g. 'media' or 'posts'.
  * @param {?string} id       ID of the rest resource to check.
  */
-export const canUser = createAsyncRegistryAction(
+export const canUser = createRegistryAction(
 	( { dispatch } ) => async ( action, resource, id ) => {
 		const methods = {
 			create: 'POST',

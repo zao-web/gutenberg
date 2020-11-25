@@ -357,7 +357,7 @@ function mapResolvers( resolvers, selectors, store, resolversCache ) {
 }
 
 function mapRegistryAsyncAction( action, store ) {
-	if ( action.isAsyncRegistryAction && ! action.registryArgs ) {
+	if ( action.isRegistryAction && ! action.registryArgs ) {
 		action.registryArgs = {
 			dispatch: dataDispatch,
 			select: dataSelect,

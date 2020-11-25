@@ -26,7 +26,7 @@ export { createRegistry } from './registry';
 export {
 	createRegistrySelector,
 	createRegistryControl,
-	createAsyncRegistryAction,
+	createRegistryAction,
 } from './factory';
 export { controls } from './controls';
 export { default as createReduxStore } from './redux-store';
