@@ -20,6 +20,7 @@ import createResolversCacheMiddleware from '../resolvers-cache-middleware';
 import metadataReducer from './metadata/reducer';
 import * as metadataSelectors from './metadata/selectors';
 import * as metadataActions from './metadata/actions';
+import { dispatch as dataDispatch, select as dataSelect } from '../';
 
 /** @typedef {import('../types').WPDataRegistry} WPDataRegistry */
 /** @typedef {import('../types').WPDataStore} WPDataStore */
@@ -260,6 +261,7 @@ function mapSelectors( selectors, store ) {
  */
 function mapActions( actions, store ) {
 	const createBoundAction = ( action ) => ( ...args ) => {
+		action = mapRegistryAsyncAction( action, store );
 		return Promise.resolve( store.dispatch( action( ...args ) ) );
 	};
 
@@ -281,6 +283,7 @@ function mapResolvers( resolvers, selectors, store, resolversCache ) {
 	// cases, an object with a `fullfill` method and other optional methods like `isFulfilled`.
 	// Here we normalize the `resolver` function to an object with `fulfill` method.
 	const mappedResolvers = mapValues( resolvers, ( resolver ) => {
+		resolver = mapRegistryAsyncAction( resolver, store );
 		if ( resolver.fulfill ) {
 			return resolver;
 		}
@@ -351,6 +354,17 @@ function mapResolvers( resolvers, selectors, store, resolversCache ) {
 		resolvers: mappedResolvers,
 		selectors: mapValues( selectors, mapSelector ),
 	};
+}
+
+function mapRegistryAsyncAction( action, store ) {
+	if ( action.isAsyncRegistryAction && ! action.registryArgs ) {
+		action.registryArgs = {
+			dispatch: dataDispatch,
+			select: dataSelect,
+			yieldAction: store.dispatch.bind( store ),
+		};
+	}
+	return action;
 }
 
 /**

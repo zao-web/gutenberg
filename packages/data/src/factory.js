@@ -79,3 +79,12 @@ export function createRegistryControl( registryControl ) {
 
 	return registryControl;
 }
+
+/**
+ * @TODO Documentation
+ */
+export function createAsyncRegistryAction( callback ) {
+	const wrapper = ( ...args ) => callback( wrapper.registryArgs )( ...args );
+	wrapper.isAsyncRegistryAction = true;
+	return wrapper;
+}
