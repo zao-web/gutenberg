@@ -9,4 +9,5 @@ packages/react-native-editor/bundle
 playground/dist
 vendor
 wordpress
+*.d.js
 !.*.js
