@@ -1174,7 +1174,7 @@ export function isCaretWithinFormattedText( state = false, action ) {
  *
  * @return {Object} Updated state.
  */
-function selection( state = {}, action ) {
+function selectionHelper( state = {}, action ) {
 	switch ( action.type ) {
 		case 'CLEAR_SELECTED_BLOCK': {
 			if ( state.clientId ) {
@@ -1236,55 +1236,57 @@ function selection( state = {}, action ) {
 	return state;
 }
 
-/**
- * Reducer returning the block selection's start.
- *
- * @param {Object} state  Current state.
- * @param {Object} action Dispatched action.
- *
- * @return {Object} Updated state.
- */
-export function selectionStart( state = {}, action ) {
-	switch ( action.type ) {
-		case 'SELECTION_CHANGE':
-			return {
-				clientId: action.clientId,
-				attributeKey: action.attributeKey,
-				offset: action.startOffset,
-			};
-		case 'RESET_SELECTION':
-			return action.selectionStart;
-		case 'MULTI_SELECT':
-			return { clientId: action.start };
-	}
+export const selection = flow( combineReducers )( {
+	/**
+	 * Reducer returning the block selection's start.
+	 *
+	 * @param {Object} state  Current state.
+	 * @param {Object} action Dispatched action.
+	 *
+	 * @return {Object} Updated state.
+	 */
+	selectionStart( state = {}, action ) {
+		switch ( action.type ) {
+			case 'SELECTION_CHANGE':
+				return {
+					clientId: action.clientId,
+					attributeKey: action.attributeKey,
+					offset: action.startOffset,
+				};
+			case 'RESET_SELECTION':
+				return action.selectionStart;
+			case 'MULTI_SELECT':
+				return { clientId: action.start };
+		}
 
-	return selection( state, action );
-}
+		return selectionHelper( state, action );
+	},
 
-/**
- * Reducer returning the block selection's end.
- *
- * @param {Object} state  Current state.
- * @param {Object} action Dispatched action.
- *
- * @return {Object} Updated state.
- */
-export function selectionEnd( state = {}, action ) {
-	switch ( action.type ) {
-		case 'SELECTION_CHANGE':
-			return {
-				clientId: action.clientId,
-				attributeKey: action.attributeKey,
-				offset: action.endOffset,
-			};
-		case 'RESET_SELECTION':
-			return action.selectionEnd;
-		case 'MULTI_SELECT':
-			return { clientId: action.end };
-	}
+	/**
+	 * Reducer returning the block selection's end.
+	 *
+	 * @param {Object} state  Current state.
+	 * @param {Object} action Dispatched action.
+	 *
+	 * @return {Object} Updated state.
+	 */
+	selectionEnd( state = {}, action ) {
+		switch ( action.type ) {
+			case 'SELECTION_CHANGE':
+				return {
+					clientId: action.clientId,
+					attributeKey: action.attributeKey,
+					offset: action.endOffset,
+				};
+			case 'RESET_SELECTION':
+				return action.selectionEnd;
+			case 'MULTI_SELECT':
+				return { clientId: action.end };
+		}
 
-	return selection( state, action );
-}
+		return selectionHelper( state, action );
+	},
+} );
 
 /**
  * Reducer returning whether the user is multi-selecting.
@@ -1691,8 +1693,7 @@ export default combineReducers( {
 	isTyping,
 	draggedBlocks,
 	isCaretWithinFormattedText,
-	selectionStart,
-	selectionEnd,
+	selection,
 	isMultiSelecting,
 	isSelectionEnabled,
 	initialPosition,
