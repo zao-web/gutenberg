@@ -1236,7 +1236,48 @@ function selectionHelper( state = {}, action ) {
 	return state;
 }
 
-export const selection = flow( combineReducers )( {
+const withSelectionReset = ( reducer ) => ( state, action ) => {
+	// When RESET_BLOCKS is dispatched, the currently selected blocks may be
+	//  replaced, in which case selection should be cleared.
+	if ( action.type === 'RESET_BLOCKS' ) {
+		const startClientId = state?.selectionStart?.clientId;
+		const endClientId = state?.selectionEnd?.clientId;
+
+		// Do nothing if there's no selected block.
+		if ( ! startClientId && ! endClientId ) {
+			return state;
+		}
+
+		// If the start of the selection won't exist after reset, remove selection.
+		if (
+			! action.blocks.some(
+				( block ) => block.clientId === startClientId
+			)
+		) {
+			return {
+				selectionStart: {},
+				selectionEnd: {},
+			};
+		}
+
+		// If the end of the selection won't exist after reset, collapse selection.
+		if (
+			! action.blocks.some( ( block ) => block.clientId === endClientId )
+		) {
+			return {
+				...state,
+				selectionEnd: state.selectionStart,
+			};
+		}
+	}
+
+	return reducer( state, action );
+};
+
+export const selection = flow(
+	combineReducers,
+	withSelectionReset
+)( {
 	/**
 	 * Reducer returning the block selection's start.
 	 *
