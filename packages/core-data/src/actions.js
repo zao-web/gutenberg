@@ -7,7 +7,11 @@ import { v4 as uuid } from 'uuid';
 /**
  * WordPress dependencies
  */
-import { createRegistryAction } from '@wordpress/data';
+import {
+	dispatch as dataDispatch,
+	select as dataSelect,
+	createRegistryAction,
+} from '@wordpress/data';
 import apiFetch from '@wordpress/api-fetch';
 import { addQueryArgs } from '@wordpress/url';
 
@@ -16,10 +20,6 @@ import { addQueryArgs } from '@wordpress/url';
  */
 import { receiveItems, removeItems, receiveQueriedItems } from './queried-data';
 import { getKindEntities, DEFAULT_ENTITY_KEY } from './entities';
-import {
-	__unstableAcquireStoreLock,
-	__unstableReleaseStoreLock,
-} from './locks';
 
 /**
  * Returns an action object used in signalling that authors have been received.
@@ -158,58 +158,63 @@ export function receiveEmbedPreview( url, preview ) {
  * @param {string}  recordId          Record ID of the deleted entity.
  * @param {?Object} query             Special query parameters for the DELETE API call.
  */
-export function* deleteEntityRecord( kind, name, recordId, query ) {
-	const entities = yield getKindEntities( kind );
-	const entity = find( entities, { kind, name } );
-	let error;
-	let deletedRecord = false;
-	if ( ! entity ) {
-		return;
-	}
-
-	const lock = yield* __unstableAcquireStoreLock(
-		'core',
-		[ 'entities', 'data', kind, name, recordId ],
-		{ exclusive: true }
-	);
-	try {
-		yield {
-			type: 'DELETE_ENTITY_RECORD_START',
-			kind,
-			name,
-			recordId,
-		};
-
-		try {
-			let path = `${ entity.baseURL }/${ recordId }`;
-
-			if ( query ) {
-				path = addQueryArgs( path, query );
-			}
-
-			deletedRecord = yield apiFetch( {
-				path,
-				method: 'DELETE',
-			} );
-
-			yield removeItems( kind, name, recordId, true );
-		} catch ( _error ) {
-			error = _error;
+export const deleteEntityRecord = createRegistryAction(
+	( { dispatch, yieldAction } ) => async ( kind, name, recordId, query ) => {
+		const entities = await yieldAction( getKindEntities( kind ) );
+		const entity = find( entities, { kind, name } );
+		if ( ! entity ) {
+			return;
 		}
 
-		yield {
-			type: 'DELETE_ENTITY_RECORD_FINISH',
-			kind,
-			name,
-			recordId,
-			error,
-		};
+		let error;
+		let deletedRecord = false;
 
-		return deletedRecord;
-	} finally {
-		yield* __unstableReleaseStoreLock( lock );
+		const lock = await dispatch(
+			'core'
+		).__unstableAcquireStoreLock(
+			'core',
+			[ 'entities', 'data', kind, name, recordId ],
+			{ exclusive: true }
+		);
+		try {
+			yieldAction( {
+				type: 'DELETE_ENTITY_RECORD_START',
+				kind,
+				name,
+				recordId,
+			} );
+
+			try {
+				let path = `${ entity.baseURL }/${ recordId }`;
+
+				if ( query ) {
+					path = addQueryArgs( path, query );
+				}
+
+				deletedRecord = await apiFetch( {
+					path,
+					method: 'DELETE',
+				} );
+
+				yieldAction( removeItems( kind, name, recordId, true ) );
+			} catch ( _error ) {
+				error = _error;
+			}
+
+			yieldAction( {
+				type: 'DELETE_ENTITY_RECORD_FINISH',
+				kind,
+				name,
+				recordId,
+				error,
+			} );
+
+			return deletedRecord;
+		} finally {
+			await dispatch( 'core' ).__unstableReleaseStoreLock( lock );
+		}
 	}
-}
+);
 
 /**
  * Returns an action object that triggers an
@@ -224,95 +229,97 @@ export function* deleteEntityRecord( kind, name, recordId, query ) {
  *
  * @return {Object} Action object.
  */
-export const editEntityRecord = createRegistryAction(
-	( { select } ) => async ( kind, name, recordId, edits, options = {} ) => {
-		const entity = select( 'core', 'getEntity', kind, name );
-		if ( ! entity ) {
-			throw new Error(
-				`The entity being edited (${ kind }, ${ name }) does not have a loaded config.`
-			);
-		}
-		const { transientEdits = {}, mergedEdits = {} } = entity;
-		const record = select( 'core' ).getRawEntityRecord(
-			kind,
-			name,
-			recordId
+export function editEntityRecord( kind, name, recordId, edits, options = {} ) {
+	const entity = dataSelect( 'core', 'getEntity', kind, name );
+	if ( ! entity ) {
+		throw new Error(
+			`The entity being edited (${ kind }, ${ name }) does not have a loaded config.`
 		);
-		const editedRecord = select( 'core' ).getEditedEntityRecord(
-			kind,
-			name,
-			recordId
-		);
-
-		const edit = {
-			kind,
-			name,
-			recordId,
-			// Clear edits when they are equal to their persisted counterparts
-			// so that the property is not considered dirty.
-			edits: Object.keys( edits ).reduce( ( acc, key ) => {
-				const recordValue = record[ key ];
-				const editedRecordValue = editedRecord[ key ];
-				const value = mergedEdits[ key ]
-					? { ...editedRecordValue, ...edits[ key ] }
-					: edits[ key ];
-				acc[ key ] = isEqual( recordValue, value ) ? undefined : value;
-				return acc;
-			}, {} ),
-			transientEdits,
-		};
-		return {
-			type: 'EDIT_ENTITY_RECORD',
-			...edit,
-			meta: {
-				undo: ! options.undoIgnore && {
-					...edit,
-					// Send the current values for things like the first undo stack entry.
-					edits: Object.keys( edits ).reduce( ( acc, key ) => {
-						acc[ key ] = editedRecord[ key ];
-						return acc;
-					}, {} ),
-				},
-			},
-		};
 	}
-);
+	const { transientEdits = {}, mergedEdits = {} } = entity;
+	const record = dataSelect(
+		'core',
+		'getRawEntityRecord',
+		kind,
+		name,
+		recordId
+	);
+	const editedRecord = dataSelect(
+		'core',
+		'getEditedEntityRecord',
+		kind,
+		name,
+		recordId
+	);
+
+	const edit = {
+		kind,
+		name,
+		recordId,
+		// Clear edits when they are equal to their persisted counterparts
+		// so that the property is not considered dirty.
+		edits: Object.keys( edits ).reduce( ( acc, key ) => {
+			const recordValue = record[ key ];
+			const editedRecordValue = editedRecord[ key ];
+			const value = mergedEdits[ key ]
+				? { ...editedRecordValue, ...edits[ key ] }
+				: edits[ key ];
+			acc[ key ] = isEqual( recordValue, value ) ? undefined : value;
+			return acc;
+		}, {} ),
+		transientEdits,
+	};
+	return {
+		type: 'EDIT_ENTITY_RECORD',
+		...edit,
+		meta: {
+			undo: ! options.undoIgnore && {
+				...edit,
+				// Send the current values for things like the first undo stack entry.
+				edits: Object.keys( edits ).reduce( ( acc, key ) => {
+					acc[ key ] = editedRecord[ key ];
+					return acc;
+				}, {} ),
+			},
+		},
+	};
+}
 
 /**
  * Action triggered to undo the last edit to
  * an entity record, if any.
  */
-export const undo = createRegistryAction( ( { select, yieldAction } ) => () => {
-	const undoEdit = select( 'core' ).getUndoEdit();
+export function undo() {
+	const undoEdit = dataSelect( 'core', 'getUndoEdit' );
 	if ( ! undoEdit ) {
 		return;
 	}
-	yieldAction( {
+	return {
 		type: 'EDIT_ENTITY_RECORD',
 		...undoEdit,
 		meta: {
 			isUndo: true,
 		},
-	} );
-} );
+	};
+}
 
 /**
  * Action triggered to redo the last undoed
  * edit to an entity record, if any.
  */
-export const redo = createRegistryAction( ( { select, yieldAction } ) => () => {
-	const redoEdit = select( 'core' ).getRedoEdit();
+export function redo() {
+	const redoEdit = dataSelect( 'core', 'getRedoEdit' );
 	if ( ! redoEdit ) {
 		return;
 	}
-	yieldAction( {
+	return {
 		type: 'EDIT_ENTITY_RECORD',
 		...redoEdit,
 		meta: {
 			isRedo: true,
 		},
-	} );
-} );
+	};
+}
 
 /**
  * Forces the creation of a new undo level.
@@ -614,27 +621,25 @@ export const saveEntityRecord = createRegistryAction(
  * @param {Object} recordId ID of the record.
  * @param {Object} options  Saving options.
  */
-export const saveEditedEntityRecord = createRegistryAction(
-	( { select, dispatch } ) => ( kind, name, recordId, options ) => {
-		if (
-			! select( 'core' ).hasEditsForEntityRecord( kind, name, recordId )
-		) {
-			return;
-		}
-		const edits = select( 'core' ).getEntityRecordNonTransientEdits(
-			kind,
-			name,
-			recordId
-		);
-		const record = { id: recordId, ...edits };
-		return dispatch( 'core' ).saveEntityRecord(
-			kind,
-			name,
-			record,
-			options
-		);
+export const saveEditedEntityRecord = ( kind, name, recordId, options ) => {
+	if (
+		! dataSelect( 'core' ).hasEditsForEntityRecord( kind, name, recordId )
+	) {
+		return;
 	}
-);
+	const edits = dataSelect( 'core' ).getEntityRecordNonTransientEdits(
+		kind,
+		name,
+		recordId
+	);
+	const record = { id: recordId, ...edits };
+	return dataDispatch( 'core' ).saveEntityRecord(
+		kind,
+		name,
+		record,
+		options
+	);
+};
 
 /**
  * Returns an action object used in signalling that Upload permissions have been received.
