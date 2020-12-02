@@ -28,7 +28,7 @@ import { getPlugins } from '../../api';
  * function Layout() {
  * 	return el(
  * 		'div',
- * 		{},
+ * 		{ area: 'my-app-area' },
  * 		'Content of the page',
  * 		PluginArea
  * 	);
@@ -44,7 +44,7 @@ import { getPlugins } from '../../api';
  * const Layout = () => (
  * 	<div>
  * 		Content of the page
- * 		<PluginArea />
+ * 		<PluginArea area="my-app-area" />
  * 	</div>
  * );
  * ```
@@ -61,15 +61,17 @@ class PluginArea extends Component {
 
 	getCurrentPluginsState() {
 		return {
-			plugins: map( getPlugins(), ( { icon, name, render } ) => {
-				return {
-					Plugin: render,
-					context: {
-						name,
-						icon,
-					},
-				};
-			} ),
+			plugins: map( getPlugins(), ( { icon, name, render, area } ) => {
+				if ( this.props.area === area ) {
+					return {
+						Plugin: render,
+						context: {
+							name,
+							icon,
+						},
+					};
+				}
+			} ).filter( Boolean ),
 		};
 	}
 
