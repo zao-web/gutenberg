@@ -1236,7 +1236,15 @@ function selectionHelper( state = {}, action ) {
 	return state;
 }
 
-const withSelectionReset = ( reducer ) => ( state, action ) => {
+/**
+ * Higher-order reducer that ensures a valid block selection remains after the
+ * RESET_BLOCKS action.
+ *
+ * @param {Function} reducer The selection reducer.
+ *
+ * @return {Object} Selection state.
+ */
+const withSelectionUpdateOnBlockReset = ( reducer ) => ( state, action ) => {
 	// When RESET_BLOCKS is dispatched, the currently selected blocks may be
 	//  replaced, in which case selection should be cleared.
 	if ( action.type === 'RESET_BLOCKS' ) {
@@ -1276,7 +1284,7 @@ const withSelectionReset = ( reducer ) => ( state, action ) => {
 
 export const selection = flow(
 	combineReducers,
-	withSelectionReset
+	withSelectionUpdateOnBlockReset
 )( {
 	/**
 	 * Reducer returning the block selection's start.
