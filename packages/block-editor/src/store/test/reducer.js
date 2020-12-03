@@ -2491,6 +2491,63 @@ describe( 'state', () => {
 			expect( state.selectionStart ).toEqual( original.selectionStart );
 			expect( state.selectionEnd ).toEqual( original.selectionEnd );
 		} );
+
+		it( 'should keep the same selection on RESET_BLOCKS if the selected blocks continue to exist', () => {
+			const original = deepFreeze( {
+				selectionStart: { clientId: 'chicken' },
+				selectionEnd: { clientId: 'cow' },
+			} );
+			const action = {
+				type: 'RESET_BLOCKS',
+				blocks: [
+					{ clientId: 'another-block' },
+					{ clientId: 'chicken' },
+					{ clientId: 'this-is-a-block-too' },
+					{ clientId: 'cow' },
+				],
+			};
+			const state = selection( original, action );
+
+			expect( state.selectionStart ).toEqual( original.selectionStart );
+			expect( state.selectionEnd ).toEqual( original.selectionEnd );
+		} );
+
+		it( 'should collapse the selection on RESET_BLOCKS if the selection start exists, but the end does not', () => {
+			const original = deepFreeze( {
+				selectionStart: { clientId: 'chicken' },
+				selectionEnd: { clientId: 'cow' },
+			} );
+			const action = {
+				type: 'RESET_BLOCKS',
+				blocks: [
+					{ clientId: 'another-block' },
+					{ clientId: 'chicken' },
+					{ clientId: 'this-is-a-block-too' },
+				],
+			};
+			const state = selection( original, action );
+
+			expect( state.selectionStart ).toEqual( original.selectionStart );
+			expect( state.selectionEnd ).toEqual( original.selectionStart );
+		} );
+
+		it( 'should clear the selection on RESET_BLOCKS if the blocks currently selected are removed', () => {
+			const original = deepFreeze( {
+				selectionStart: { clientId: 'chicken' },
+				selectionEnd: { clientId: 'cow' },
+			} );
+			const action = {
+				type: 'RESET_BLOCKS',
+				blocks: [
+					{ clientId: 'another-block' },
+					{ clientId: 'this-is-a-block-too' },
+				],
+			};
+			const state = selection( original, action );
+
+			expect( state.selectionStart ).toEqual( {} );
+			expect( state.selectionEnd ).toEqual( {} );
+		} );
 	} );
 
 	describe( 'preferences()', () => {
