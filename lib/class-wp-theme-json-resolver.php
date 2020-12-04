@@ -307,25 +307,25 @@ class WP_Theme_JSON_Resolver {
 			$result->merge( self::get_core_origin() );
 			$result->merge( $this->get_theme_origin( $theme_support_data ) );
 			$result->merge( self::get_user_origin() );
-			return $result;
+			return apply_filters( 'get_global_styles_data', $result, $origin, $theme_support_data );
 		}
 
 		if ( ( 'theme' === $origin ) && $merged ) {
 			$result = new WP_Theme_JSON();
 			$result->merge( self::get_core_origin() );
 			$result->merge( $this->get_theme_origin( $theme_support_data ) );
-			return $result;
+			return apply_filters( 'get_global_styles_data', $result, $origin, $theme_support_data );
 		}
 
 		if ( 'user' === $origin ) {
-			return self::get_user_origin();
+			return return apply_filters( 'get_global_styles_data', self::get_user_origin(), $origin, $theme_support_data );
 		}
 
 		if ( 'theme' === $origin ) {
-			return $this->get_theme_origin( $theme_support_data );
+			return apply_filters( 'get_global_styles_data', $this->get_theme_origin( $theme_support_data ), $origin, $theme_support_data );
 		}
 
-		return self::get_core_origin();
+		return apply_filters( 'get_global_styles_data', self::get_core_origin(), $origin, $theme_support_data );
 	}
 
 	/**
