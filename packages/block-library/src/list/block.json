@@ -32,6 +32,7 @@
 		"color": {
 			"gradients": true
 		},
-		"__unstablePasteTextInline": true
+		"__unstablePasteTextInline": true,
+		"__experimentalFontFamily": true
 	}
 }

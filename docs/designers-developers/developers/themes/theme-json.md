@@ -352,7 +352,7 @@ These are the current typography properties supported by blocks:
 | Global | Yes | Yes | Yes | Yes | Yes | Yes | Yes |
 | Code | - | Yes | - | - | - | - | - |
 | Heading [1] | - | Yes | - | - | Yes | - | - |
-| List | - | Yes | - | - | - | - | - |
+| List | Yes | Yes | - | - | - | - | - |
 | Navigation | Yes | Yes | Yes | Yes | - | Yes | Yes |
 | Paragraph | - | Yes | - | - | Yes | - | - |
 | Post Author | - | Yes | - | - | Yes | - | - |
