@@ -14,6 +14,7 @@ import {
 	BlockList,
 	__unstableUseBlockSelectionClearer as useBlockSelectionClearer,
 } from '@wordpress/block-editor';
+import { ConvertToGroupButtons } from '@wordpress/editor';
 
 /**
  * Internal dependencies
@@ -55,6 +56,7 @@ export default function BlockEditor( { setIsInserterOpen } ) {
 		>
 			<BlockEditorKeyboardShortcuts />
 			<TemplatePartConverter />
+			<ConvertToGroupButtons />
 			<__experimentalLinkControl.ViewerFill>
 				{ useCallback(
 					( fillProps ) => (
