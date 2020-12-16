@@ -108,6 +108,7 @@ function URLPicker( {
 	setAttributes,
 	opensInNewTab,
 	onToggleOpenInNewTab,
+	anchorRef,
 } ) {
 	const linkToolbarButtonRef = useRef( null );
 	const {
@@ -135,6 +136,7 @@ function URLPicker( {
 			position="bottom center"
 			onKeyDown={ onClose }
 			onFocusOutside={ onFocusOutside }
+      anchorRef={ anchorRef?.current }
 		>
 			<LinkControl
 				className="wp-block-navigation-link__inline-link-input"
@@ -287,6 +289,7 @@ function ButtonEdit( props ) {
 				isSelected={ isSelected }
 				opensInNewTab={ linkTarget === '_blank' }
 				onToggleOpenInNewTab={ onToggleOpenInNewTab }
+				anchorRef={ blockProps.ref }
 			/>
 			<InspectorControls>
 				<BorderPanel
