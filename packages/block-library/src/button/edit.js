@@ -136,7 +136,7 @@ function URLPicker( {
 			position="bottom center"
 			onKeyDown={ onClose }
 			onFocusOutside={ onFocusOutside }
-      anchorRef={ anchorRef?.current }
+			anchorRef={ anchorRef?.current }
 		>
 			<LinkControl
 				className="wp-block-navigation-link__inline-link-input"
