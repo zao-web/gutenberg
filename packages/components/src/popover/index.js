@@ -7,7 +7,12 @@ import mergeRefs from 'react-merge-refs';
 /**
  * WordPress dependencies
  */
-import { useRef, useState, useLayoutEffect } from '@wordpress/element';
+import {
+	useRef,
+	useState,
+	useLayoutEffect,
+	useCallback,
+} from '@wordpress/element';
 import { getRectangleFromRange } from '@wordpress/dom';
 import deprecated from '@wordpress/deprecated';
 import {
@@ -484,7 +489,10 @@ const Popover = ( {
 				}
 			) }
 			{ ...contentProps }
-			ref={ mergeRefs( [ containerRef, dialogRef ] ) }
+			ref={ useCallback( mergeRefs( [ containerRef, dialogRef ] ), [
+				containerRef,
+				dialogRef,
+			] ) }
 			{ ...dialogProps }
 			onKeyDown={ onKeyDown }
 			tabIndex="-1"
