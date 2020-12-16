@@ -57,9 +57,9 @@ function useDialog( options ) {
 		} );
 	}, [] );
 	const refs = [
-		constrainedTabbingRef,
-		focusReturnRef,
-		focusOnMountRef,
+		options.focusOnMount !== false ? constrainedTabbingRef : null,
+		options.focusOnMount !== false ? focusReturnRef : null,
+		options.focusOnMount !== false ? focusOnMountRef : null,
 		closeOnEscapeRef,
 	];
 	return [ useCallback( mergeRefs( refs ), refs ), focusOutsideProps ];
