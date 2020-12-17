@@ -452,6 +452,8 @@ const Popover = ( {
 			deprecated( 'Popover onClickOutside prop', {
 				alternative: 'onFocusOutside',
 			} );
+
+			onClickOutside( clickEvent );
 		} else if ( onClose ) {
 			onClose();
 		}
