@@ -4,17 +4,21 @@
 
 ### Breaking Changes
 
-<<<<<<< HEAD
-
 -   The bundled `jest` dependency has been updated to the next major version `^26.6.3` (see [Breaking Changes](https://jestjs.io/blog/2020/05/05/jest-26), [#27956](https://github.com/WordPress/gutenberg/pull/27956)).
 -   The bundled `@wordpress/eslint-plugin` dependency has been updated to the next major version `^8.0.0`. There are new ESLint rules enabled in the recommended config used by `lint-js` command.
--   The bundled `stylelint-config-wordpress` dependency has been replaced with `@wordpress/stylelint-config` (#27810)[https://github.com/WordPress/gutenberg/pull/27810].
+-   The bundled `stylelint-config-wordpress` dependency has been replaced with `@wordpress/stylelint-config` ([#27810](https://github.com/WordPress/gutenberg/pull/27810)).
+-   The bundled `css-loader` dependency has been updated from requiring `^3.5.2` to requiring `^5.0.1` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
+-   The bundled `mini-css-extract-plugin` dependency has been updated from requiring `^0.9.0` to requiring `^1.3.3` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
 -   The bundled `postcss-loader` dependency has been updated from requiring `^3.0.0` to requiring `^4.1.0` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
+-   The bundled `sass-loader` dependency has been updated from requiring `^8.0.2` to requiring `^10.1.0` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
+-   The bundled `thread-loader` dependency has been updated from requiring `^2.1.3` to requiring `^3.0.1` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
+-   The bundled `url-loader` dependency has been updated from requiring `^3.0.0` to requiring `^4.1.1` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
 
 ### Enhancements
 
 -   `wordpress` subfolder is no longer ignored when detecting files for testing, linting or formatting.
 -   The bundled `eslint` dependency has been updated from requiring `^7.1.0` to requiring `^7.17.0` ([#27965](https://github.com/WordPress/gutenberg/pull/27965)).
+-   The bundled `babel-loader` dependency has been updated from requiring `^8.1.1` to requiring `^8.2.2` ([#27821](https://github.com/WordPress/gutenberg/pull/27821)).
 
 ### Internal
 

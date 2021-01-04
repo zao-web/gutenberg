@@ -4,7 +4,7 @@
 
 ### Breaking Changes
 
--   The bundled `postcs-loader` dependency has been updated from requiring `^7.0.32` to requiring `^8.2.2` (see [Breaking Changes](https://github.com/postcss/postcss/releases/tag/8.0.0), [#27821](https://github.com/WordPress/gutenberg/pull/27821)).
+-   The bundled `postcss` dependency has been updated from requiring `^7.0.32` to requiring `^8.2.2` (see [Breaking Changes](https://github.com/postcss/postcss/releases/tag/8.0.0), [#27821](https://github.com/WordPress/gutenberg/pull/27821)).
 
 ## 2.0.0 (2019-03-06)
 
