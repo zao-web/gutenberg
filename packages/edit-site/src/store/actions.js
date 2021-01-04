@@ -129,10 +129,20 @@ export function* setPage( page ) {
 	if ( ! page.path && page.context?.postId ) {
 		page.path = `?p=${ page.context.postId }`;
 	}
-	const templateId = yield findTemplate( page.path );
+	const { id: templateId, slug: templateSlug } = yield findTemplate(
+		page.path
+	);
 	yield {
 		type: 'SET_PAGE',
-		page,
+		page: ! templateSlug
+			? page
+			: {
+					...page,
+					context: {
+						...page.context,
+						templateSlug,
+					},
+			  },
 		templateId,
 	};
 	return templateId;
