@@ -233,7 +233,12 @@ class WP_Theme_JSON_Resolver {
 				return $config;
 			}
 
-			if ( is_array( $decoded_data ) ) {
+			if (
+				is_array( $decoded_data ) &&
+				isset( $decoded_data['isGlobalStylesUserThemeJSON'] ) &&
+				$decoded_data['isGlobalStylesUserThemeJSON']
+			) {
+				unset( $decoded_data['isGlobalStylesUserThemeJSON'] );
 				$config = $decoded_data;
 			}
 		}

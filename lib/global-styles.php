@@ -271,3 +271,35 @@ function gutenberg_experimental_global_styles_register_user_cpt() {
 add_action( 'init', 'gutenberg_experimental_global_styles_register_user_cpt' );
 add_filter( 'block_editor_settings', 'gutenberg_experimental_global_styles_settings', PHP_INT_MAX );
 add_action( 'wp_enqueue_scripts', 'gutenberg_experimental_global_styles_enqueue_assets' );
+
+
+function gutenberg_global_styles_filter_post( $content ) {
+	$decoded_data        = json_decode( stripslashes( $content ), true );
+	$json_decoding_error = json_last_error();
+	if ( JSON_ERROR_NONE === $json_decoding_error && is_array( $decoded_data ) && isset( $decoded_data['isGlobalStylesUserThemeJSON'] ) && $decoded_data['isGlobalStylesUserThemeJSON'] ) {
+		$decoded_data['aaaa'] = true;
+		return wp_json_encode( $decoded_data );
+	}
+	return $content;
+}
+
+function gutenberg_global_styles_kses_init_filters() {
+	add_filter( 'content_save_pre', 'gutenberg_global_styles_filter_post' );
+}
+
+function gutenberg_global_styles_kses_remove_filters() {
+	remove_filter( 'content_save_pre', 'gutenberg_global_styles_filter_post' );
+}
+
+
+function gutenberg_global_styles_kses_init() {
+	gutenberg_global_styles_kses_remove_filters();
+	if ( ! current_user_can( 'unfiltered_html' ) || true ) {
+		gutenberg_global_styles_kses_init_filters();
+	}
+}
+
+
+add_action( 'init', 'gutenberg_global_styles_kses_init' );
+add_action( 'set_current_user', 'gutenberg_global_styles_kses_init' );
+// if ( apply_filters( 'force_filtered_html_on_import', false ) ) {
