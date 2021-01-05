@@ -15,7 +15,7 @@ describe( 'Gutenberg Editor File Block tests @canary', () => {
 		const block = await editorPage.getFirstBlockVisible();
 
 		block.click();
-		await editorPage.driver.sleep( 1000 );
+		await editorPage.driver.sleep( 5000 );
 		await editorPage.chooseMediaLibrary();
 
 		const html = await editorPage.getHtmlContent();
