@@ -15,7 +15,7 @@ jobs:
     strategy:
       matrix:
         native-test-name: [
-          gutenberg-editor-gallery
+          gutenberg-editor-file
         ]
 
     steps:
