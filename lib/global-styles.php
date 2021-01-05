@@ -276,9 +276,15 @@ add_action( 'wp_enqueue_scripts', 'gutenberg_experimental_global_styles_enqueue_
 function gutenberg_global_styles_filter_post( $content ) {
 	$decoded_data        = json_decode( stripslashes( $content ), true );
 	$json_decoding_error = json_last_error();
-	if ( JSON_ERROR_NONE === $json_decoding_error && is_array( $decoded_data ) && isset( $decoded_data['isGlobalStylesUserThemeJSON'] ) && $decoded_data['isGlobalStylesUserThemeJSON'] ) {
-		$decoded_data['aaaa'] = true;
-		return wp_json_encode( $decoded_data );
+	if (
+		JSON_ERROR_NONE === $json_decoding_error &&
+		is_array( $decoded_data ) &&
+		isset( $decoded_data['isGlobalStylesUserThemeJSON'] ) &&
+		$decoded_data['isGlobalStylesUserThemeJSON']
+	) {
+		unset( $decoded_data['isGlobalStylesUserThemeJSON'] );
+		$theme_json = new WP_Theme_JSON( $decoded_data );
+		return wp_json_encode( $theme_json->get_raw_data );
 	}
 	return $content;
 }

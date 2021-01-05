@@ -346,6 +346,34 @@ class WP_Theme_JSON {
 		}
 	}
 
+
+	private static function get_properties_metadata_case_mappings() {
+		static $properties_metadata_case_mappings;
+		if ( null === $properties_metadata_case_mappings ) {
+			$properties_metadata_case_mappings = array(
+				'to_kebab_case' => array(),
+				'to_camel_case' => array(),
+				'to_property'   => array();
+			);
+			foreach ( self::PROPERTIES_METADATA as $key => $metadata ) {
+				$kebab_case = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $key ) );
+				$properties_metadata_case_mappings['to_kebab_case'][ $key ]        = $kebab_case;
+				$properties_metadata_case_mappings['to_camel_case'][ $kebab_case ] = $key;
+				$properties_metadata_case_mappings['to_property'][ $kebab_case ]   = $key;
+				if ( self::has_properties( $metadata ) ) {
+					foreach ( $metadata['properties'] as $property ) {
+						$camel_case = $key . ucfirst( $property );
+						$kebab_case = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $camel_case ) );
+						$properties_metadata_case_mappings['to_kebab_case'][ $camel_case ] = $kebab_case;
+						$properties_metadata_case_mappings['to_camel_case'][ $kebab_case ] = $camel_case;
+						$properties_metadata_case_mappings['to_property'][ $kebab_case ]   = $key;
+					}
+				}
+			}
+		}
+		return $properties_metadata_case_mappings;
+	}
+
 	/**
 	 * Returns the metadata for each block.
 	 *
@@ -669,7 +697,7 @@ class WP_Theme_JSON {
 		if ( empty( $context['styles'] ) ) {
 			return;
 		}
-
+		$metadata_mappings = get_properties_metadata_case_mappings();
 		$properties = array();
 		foreach ( self::PROPERTIES_METADATA as $name => $metadata ) {
 			if ( ! in_array( $name, $context_supports, true ) ) {
@@ -696,9 +724,9 @@ class WP_Theme_JSON {
 		foreach ( $properties as $prop ) {
 			$value = self::get_property_value( $context['styles'], $prop['value'] );
 			if ( ! empty( $value ) ) {
-				$kebabcased_name = strtolower( preg_replace( '/(?<!^)[A-Z]/', '-$0', $prop['name'] ) );
+				$kebab_cased_name = $metadata_mappings['to_kebab_case'][ $prop['name'] ];
 				$declarations[]  = array(
-					'name'  => $kebabcased_name,
+					'name'  => $kebab_cased_name,
 					'value' => $value,
 				);
 			}
@@ -1010,6 +1038,24 @@ class WP_Theme_JSON {
 						$this->contexts[ $context ][ $subtree ][ $leaf ],
 						$incoming_data[ $context ][ $subtree ][ $leaf ]
 					);
+				}
+			}
+		}
+	}
+
+	public remove_insecure_properties() {
+		$metadata          = $this->get_blocks_metadata();
+		$metadata_mappings = get_properties_metadata_case_mappings();
+		foreach ( $this->contexts as $context_name => $context ) {
+			$supports = $metadata[ $context_name ]['supports'];
+
+			$declarations = array();
+			self::compute_style_properties( $declarations, $context, $supports );
+			foreach ( $declarations as $declaration ) {
+				$style_to_validate = $declaration['name'] . ': ' . $declaration['value'];
+				$result = safecss_filter_attr( $style_to_validate );
+				if ( $result !== $style_to_validate ) {
+
 				}
 			}
 		}

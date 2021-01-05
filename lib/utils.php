@@ -51,11 +51,12 @@ function gutenberg_experimental_get( $array, $path, $default = array() ) {
  *         ),
  *     );
  *
- * @param array $array   An array that we want to mutate to include a specific value in a path.
- * @param array $path    An array of keys describing the path that we want to mutate.
- * @param mixed $value   The value that will be set.
+ * @param array $array        An array that we want to mutate to include a specific value in a path.
+ * @param array $path         An array of keys describing the path that we want to mutate.
+ * @param mixed $value        The value that will be set.
+ * @param mixed $should_unset If true and value is null, instead of setting a value the path is unset.
  */
-function gutenberg_experimental_set( &$array, $path, $value = null ) {
+function gutenberg_experimental_set( &$array, $path, $value = null, $should_unset = false ) {
 	// Confirm $array is valid.
 	if ( ! is_array( $array ) ) {
 		return;
@@ -88,5 +89,10 @@ function gutenberg_experimental_set( &$array, $path, $value = null ) {
 		}
 		$array = &$array[ $path_element ];
 	}
-	$array[ $path[ $i ] ] = $value;
+	if ( null === $value && $should_unset ) {
+		unset( $array[ $path[ $i ] ] );
+	} else {
+		$array[ $path[ $i ] ] = $value;
+	}
+
 }
