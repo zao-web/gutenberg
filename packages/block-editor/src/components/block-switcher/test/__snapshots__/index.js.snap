@@ -20,7 +20,6 @@ exports[`BlockSwitcher should render disabled block switcher with multi block of
         showColors={true}
       />
     }
-    title="Heading"
   />
 </ToolbarGroup>
 `;
