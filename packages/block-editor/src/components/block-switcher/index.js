@@ -16,6 +16,7 @@ import {
 import { switchToBlockType, store as blocksStore } from '@wordpress/blocks';
 import { useSelect, useDispatch } from '@wordpress/data';
 import { stack } from '@wordpress/icons';
+import { useViewportMatch } from '@wordpress/compose';
 
 /**
  * Internal dependencies
@@ -31,6 +32,7 @@ const BlockSwitcher = ( { clientIds } ) => {
 		possibleBlockTransformations,
 		hasBlockStyles,
 		icon,
+		blockTitle,
 	} = useSelect(
 		( select ) => {
 			const {
@@ -60,10 +62,13 @@ const BlockSwitcher = ( { clientIds } ) => {
 				icon: isSelectionOfSameType
 					? getBlockType( firstBlock.name )?.icon
 					: stack,
+				blockTitle: getBlockType( firstBlock.name ).title,
 			};
 		},
 		[ clientIds ]
 	);
+
+	const isSmallScreen = useViewportMatch( 'small', '<' );
 
 	if ( ! blocks?.length ) return null;
 
@@ -77,16 +82,20 @@ const BlockSwitcher = ( { clientIds } ) => {
 				<ToolbarButton
 					disabled
 					className="block-editor-block-switcher__no-switcher-icon"
-					title={ __( 'Block icon' ) }
+					title={ blockTitle }
 					icon={ <BlockIcon icon={ icon } showColors /> }
 				/>
 			</ToolbarGroup>
 		);
 	}
 
+	const singleBlockLabel = isSmallScreen
+		? blockTitle
+		: `${ __( 'Change block type or style' ) } ( ${ blockTitle } )`;
+
 	const blockSwitcherLabel =
 		1 === blocks.length
-			? __( 'Change block type or style' )
+			? singleBlockLabel
 			: sprintf(
 					/* translators: %s: number of blocks. */
 					_n(
